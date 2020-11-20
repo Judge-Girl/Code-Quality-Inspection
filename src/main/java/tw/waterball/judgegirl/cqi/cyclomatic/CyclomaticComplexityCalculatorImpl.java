@@ -14,13 +14,15 @@
 package tw.waterball.judgegirl.cqi.cyclomatic;
 
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * @author - johnny850807@gmail.com (Waterball)
  */
 public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityCalculator {
+
     @Override
-    public CyclomaticComplexityReport calculate(Path sourcePath) {
+    public CyclomaticComplexityReport calculate(Set<String> sourceCodes) {
         return new CyclomaticComplexityReport("Hello World");
     }
 }

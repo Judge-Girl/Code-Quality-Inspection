@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,8 +31,9 @@ class CyclomaticComplexityCalculatorTest {
 
     @Test
     void test() {
-        CyclomaticComplexityReport report = calculator.calculate(Paths.get("wherever"));
+        CyclomaticComplexityReport report = calculator.calculate(
+                new HashSet<>()
+        );
         assertEquals("Hello World", report.mock);
     }
-
 }
