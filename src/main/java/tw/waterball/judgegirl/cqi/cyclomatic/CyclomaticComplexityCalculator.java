@@ -13,12 +13,13 @@
 
 package tw.waterball.judgegirl.cqi.cyclomatic;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author - johnny850807@gmail.com (Waterball)
  */
 public interface CyclomaticComplexityCalculator {
-    CyclomaticComplexityReport calculate(Set<String> sourceCodes);
+    CyclomaticComplexityReport calculate(List<String> sourceCodes) throws IOException, InterruptedException;
 }

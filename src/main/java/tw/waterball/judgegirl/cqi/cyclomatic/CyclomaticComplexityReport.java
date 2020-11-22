@@ -17,11 +17,10 @@ package tw.waterball.judgegirl.cqi.cyclomatic;
  * TODO
  */
 public class CyclomaticComplexityReport {
-    public String mock;
+    public int score;
 
-    public CyclomaticComplexityReport(String mock) {
-        this.mock = mock;
+    public CyclomaticComplexityReport(int score) {
+        this.score = score;
     }
-
 
 }
