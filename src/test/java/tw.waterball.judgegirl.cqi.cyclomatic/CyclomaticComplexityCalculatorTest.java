@@ -39,8 +39,8 @@ class CyclomaticComplexityCalculatorTest {
     @Test
     void test() throws IOException, InterruptedException {
         List<String> sourceCodes = new ArrayList<>();
-        String basePath = "C:/Users/user/Desktop/lab/judge/";
-        Scanner sc = new Scanner(new File(basePath + "result"));
+        String basePath = "testdata/";
+        Scanner sc = new Scanner(new File(basePath + "expected_result"));
         int total = 0;
         while(sc.hasNext()) {
             String filename = sc.next();
@@ -48,14 +48,12 @@ class CyclomaticComplexityCalculatorTest {
             String sourceCode = Files.readString(Paths.get(basePath + filename));
             sourceCodes.add(sourceCode);
             int score = calculator.calculate(new ArrayList<>(Collections.singleton(sourceCode))).score;
-            System.out.println(filename + " " + expected + " " + score);
             assertEquals(expected, score);
             total += score;
         }
         CyclomaticComplexityReport report = calculator.calculate(
                 sourceCodes
         );
-        //System.out.println(report.score);
         assertEquals(total, report.score);
     }
 }
