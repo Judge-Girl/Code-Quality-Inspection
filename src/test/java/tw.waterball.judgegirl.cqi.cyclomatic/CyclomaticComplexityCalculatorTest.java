@@ -16,11 +16,20 @@ package tw.waterball.judgegirl.cqi.cyclomatic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.nio.file.Files;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author - ryan01234keroro56789@gmail.com (Giver)
+ */
 class CyclomaticComplexityCalculatorTest {
     private CyclomaticComplexityCalculator calculator;
 
@@ -30,10 +39,26 @@ class CyclomaticComplexityCalculatorTest {
     }
 
     @Test
-    void test() {
-        CyclomaticComplexityReport report = calculator.calculate(
-                new HashSet<>()
-        );
-        assertEquals("Hello World", report.mock);
+    void test() throws IOException {
+        List<String> sourceCodes = new ArrayList<>();
+        String basePath = "testdata/";
+        int total = 0;
+        try {
+            Scanner sc = new Scanner(new File(basePath + "expected_result"));
+            while(sc.hasNext()) {
+                String filename = sc.next();
+                Integer expected = sc.nextInt();
+                String sourceCode = Files.readString(Paths.get(basePath + filename));
+                sourceCodes.add(sourceCode);
+                int score = calculator.calculate(Collections.singletonList(sourceCode)).score;
+                assertEquals(expected, score);
+                total += score;
+            }
+        }
+        catch (IOException err) {
+            throw new RuntimeException(err);
+        }
+        CyclomaticComplexityReport report = calculator.calculate(sourceCodes);
+        assertEquals(total, report.score);
     }
 }

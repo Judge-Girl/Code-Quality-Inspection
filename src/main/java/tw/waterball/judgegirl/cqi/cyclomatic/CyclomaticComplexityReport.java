@@ -14,14 +14,13 @@
 package tw.waterball.judgegirl.cqi.cyclomatic;
 
 /**
- * TODO
+ * @author - ryan01234keroro56789@gmail.com (Giver)
  */
 public class CyclomaticComplexityReport {
-    public String mock;
+    public int score;
 
-    public CyclomaticComplexityReport(String mock) {
-        this.mock = mock;
+    public CyclomaticComplexityReport(int score) {
+        this.score = score;
     }
-
 
 }
