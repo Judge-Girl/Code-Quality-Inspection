@@ -1,6 +1,7 @@
 package tw.waterball.judgegirl.cqi.codingStyle;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +16,7 @@ class CodingStyleAnalyzerTest {
 
     @Test
     void test() {
-        CodingStyleAnalyzeReport report = analyzer.analyze("Pogu");
-        assertEquals("hello world Pogu", report.rawString);
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/sample");
+        assertEquals(0, report.getScore());
     }
 }
