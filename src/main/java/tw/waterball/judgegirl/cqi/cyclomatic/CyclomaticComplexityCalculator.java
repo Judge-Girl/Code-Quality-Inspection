@@ -13,8 +13,6 @@
 
 package tw.waterball.judgegirl.cqi.cyclomatic;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
