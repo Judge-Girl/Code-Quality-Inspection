@@ -18,8 +18,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * @author - johnny850807@gmail.com (Waterball)
+ * @author - ryan01234keroro56789@gmail.com (Giver)
  */
 public interface CyclomaticComplexityCalculator {
-    CyclomaticComplexityReport calculate(List<String> sourceCodes) throws IOException, InterruptedException;
+    CyclomaticComplexityReport calculate(List<String> sourceCodes);
 }

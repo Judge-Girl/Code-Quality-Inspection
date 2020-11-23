@@ -27,9 +27,11 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author - ryan01234keroro56789@gmail.com (Giver)
+ */
 class CyclomaticComplexityCalculatorTest {
     private CyclomaticComplexityCalculator calculator;
-    private Object HashSet;
 
     @BeforeEach
     void setup() {
@@ -37,23 +39,26 @@ class CyclomaticComplexityCalculatorTest {
     }
 
     @Test
-    void test() throws IOException, InterruptedException {
+    void test() throws IOException {
         List<String> sourceCodes = new ArrayList<>();
         String basePath = "testdata/";
-        Scanner sc = new Scanner(new File(basePath + "expected_result"));
         int total = 0;
-        while(sc.hasNext()) {
-            String filename = sc.next();
-            Integer expected = sc.nextInt();
-            String sourceCode = Files.readString(Paths.get(basePath + filename));
-            sourceCodes.add(sourceCode);
-            int score = calculator.calculate(new ArrayList<>(Collections.singleton(sourceCode))).score;
-            assertEquals(expected, score);
-            total += score;
+        try {
+            Scanner sc = new Scanner(new File(basePath + "expected_result"));
+            while(sc.hasNext()) {
+                String filename = sc.next();
+                Integer expected = sc.nextInt();
+                String sourceCode = Files.readString(Paths.get(basePath + filename));
+                sourceCodes.add(sourceCode);
+                int score = calculator.calculate(Collections.singletonList(sourceCode)).score;
+                assertEquals(expected, score);
+                total += score;
+            }
         }
-        CyclomaticComplexityReport report = calculator.calculate(
-                sourceCodes
-        );
+        catch (IOException err) {
+            throw new RuntimeException(err);
+        }
+        CyclomaticComplexityReport report = calculator.calculate(sourceCodes);
         assertEquals(total, report.score);
     }
 }
