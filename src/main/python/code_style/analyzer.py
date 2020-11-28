@@ -1,6 +1,6 @@
 
 import os
-from coding_style_analyzer import coding_style_analyzer
+from cpp_check import analyze_code_style
 
 try:
     import xml.etree.cElementTree as XML
@@ -17,7 +17,7 @@ def create_xml_element_with_path(tag_name, path):
 
 def analyze_file(path, config):
     xml = create_xml_element_with_path('file', path)
-    check_result = coding_style_analyzer(path)
+    check_result = analyze_code_style(path)
     xml.set('score', '0')
     return xml
 

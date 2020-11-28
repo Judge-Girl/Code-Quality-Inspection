@@ -13,22 +13,21 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         try {
-            String result = CallPython(sourceRoot);
+            String result = callPython(sourceRoot);
             return new CodingStyleAnalyzeReport(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return new CodingStyleAnalyzeReport("");
     }
 
-    private String CallPython(String sourceRoot) throws InterruptedException, IOException {
+    private String callPython(String sourceRoot) throws InterruptedException, IOException {
         Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot).start();
         pythonProcess.waitFor();
         return readProcessOutput(pythonProcess);
     }
 
     private String getPathToPythonEntry() {
-        return "./src/main/python/codingStyleAnalyzer/main.py";
+        return "./src/main/python/code_style/main.py";
     }
 
     private String readProcessOutput(Process process) {
@@ -37,12 +36,13 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
 
             String totalResult = "", line;
-            while ((line = reader.readLine()) != null) totalResult += line;
+            while ((line = reader.readLine()) != null) {
+                totalResult += line;
+            }
 
             return totalResult;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "";
     }
 }
