@@ -84,12 +84,12 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
     }
 
     private String removeStringLiterals(String sourceCode) {
-        String result = new String("");
+        StringBuilder result = new StringBuilder();
         Boolean inStr = false;
         for(int i = 0; i < sourceCode.length(); i++) {
             if(inStr) {
                 if(sourceCode.charAt(i) == '"') {
-                    result += '"';
+                    result.append('"');
                     inStr = false;
                 }
                 else if(sourceCode.charAt(i) == '\\') {
@@ -97,13 +97,13 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
                 }
             }
             else {
-                result += sourceCode.charAt(i);
+                result.append(sourceCode.charAt(i));
                 if(sourceCode.charAt(i) == '"') {
                     inStr = true;
                 }
             }
         }
-        return result;
+        return result.toString();
     }
 
     private int calculateCCScore(String sourceCode) {
