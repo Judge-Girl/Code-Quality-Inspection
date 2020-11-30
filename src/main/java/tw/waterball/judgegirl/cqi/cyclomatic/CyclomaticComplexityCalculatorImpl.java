@@ -40,7 +40,7 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
 
     private int calculateSingleCode(String sourceCode) {
         sourceCode = preprocess(sourceCode);
-        return calculateCCScore(sourceCode) - calculateCCInStringLiterals(sourceCode);
+        return calculateCCScore(sourceCode);
     }
 
     private String preprocess(String sourceCode) {
@@ -49,6 +49,7 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
         sourceCode = callCPreprocessor(sourceCode);
         sourceCode = removePattern(sourceCode, "\n# [0-9]+ [^\n]*");
         sourceCode = removePattern(sourceCode, "^[ \t\n]*");
+        sourceCode = removeStringLiterals(sourceCode);
         return sourceCode;
     }
 
@@ -82,6 +83,29 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
         return sourceCode;
     }
 
+    private String removeStringLiterals(String sourceCode) {
+        StringBuilder result = new StringBuilder();
+        Boolean inStr = false;
+        for(int i = 0; i < sourceCode.length(); i++) {
+            if(inStr) {
+                if(sourceCode.charAt(i) == '"') {
+                    result.append('"');
+                    inStr = false;
+                }
+                else if(sourceCode.charAt(i) == '\\') {
+                    i++;
+                }
+            }
+            else {
+                result.append(sourceCode.charAt(i));
+                if(sourceCode.charAt(i) == '"') {
+                    inStr = true;
+                }
+            }
+        }
+        return result.toString();
+    }
+
     private int calculateCCScore(String sourceCode) {
         String patternString = "([^0-9A-Za-z_]((if)|(case)|(for)|(while)|(catch))[^0-9A-Za-z_])|[&][&]|[|][|]|[?]";
         Pattern pattern = Pattern.compile(patternString);
@@ -89,17 +113,6 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
         int counter = 0;
         while(matcher.find()) {
             counter++;
-        }
-        return counter;
-    }
-
-    private int calculateCCInStringLiterals(String code) {
-        String patternString = "\"(\\.|[^\"\n])*\"";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(code);
-        int counter = 0;
-        while(matcher.find()) {
-            counter += calculateCCScore(matcher.group());
         }
         return counter;
     }
