@@ -8,8 +8,10 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from rules.global_variable import global_variable_check
+from rules.naming_style import naming_style_check
 
-rules = [global_variable_check]
+rules = [global_variable_check,
+         naming_style_check]
 
 def dump_cpp_check_result(file_path):
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
