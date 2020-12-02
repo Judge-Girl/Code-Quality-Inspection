@@ -12,7 +12,7 @@ from analyzer import analyze
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("source_root")
-    parser.add_argument("--formula", type=str, default="-{global_variable_count}")
+    parser.add_argument("--formula", type=str, default="-{global_variable_count}-{bad_naming_style_count}")
     args = parser.parse_args()
     return args
 
