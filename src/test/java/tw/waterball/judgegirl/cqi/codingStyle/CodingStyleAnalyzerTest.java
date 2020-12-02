@@ -18,4 +18,10 @@ class CodingStyleAnalyzerTest {
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/teamcode");
         assertEquals(0, report.getScore());
     }
+
+    @Test
+    void testGlobalVariableCount() {
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/globalvar");
+        assertEquals(-6, report.getScore());
+    }
 }

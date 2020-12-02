@@ -26,7 +26,7 @@ def dump_cpp_check_result(file_path):
 def analyze_code_style(path):
     xml = XML.fromstring(dump_cpp_check_result(path))
     xml = xml.find('dump')
-    # TODO: parse dump result with rule
+
     result = dict()
     for rule in rules:
         result = {**result, **rule(xml)}

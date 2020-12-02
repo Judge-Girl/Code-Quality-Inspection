@@ -21,8 +21,9 @@ def analyze_file(path, config):
     for key in check_result:
         xml.set(key, check_result[key])
 
-    xml.set('score', '0')
-    # TODO: calculate score
+    formula = config.formula.format(**xml.attrib)
+    score = eval(formula)
+    xml.set('score', str(score))
     return xml
 
 
