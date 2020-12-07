@@ -15,17 +15,26 @@ def is_underscore_naming_style(s):
     return re.search('_', s)
 
 def split_by_uppercase(x, y):
+    """
+    Usage:
+        words = reduce(split_by_uppercase, 'theBigCat', [''])
+        assert words == ['the', 'big', 'cat']
+    """
     if y.isupper():
         return x + [y.lower()]
     else:
         x[-1] += y
         return x
 
-def is_legal_name(s):
-    if is_underscore_naming_style(s):
-        words = s.split('_')
+def split_variable_name(variable_name):
+    if is_underscore_naming_style(variable_name):
+        words = variable_name.split('_')
     else:
-        words = reduce(split_by_uppercase, s, [''])
+        words = reduce(split_by_uppercase, variable_name, [''])
+    return words
+
+def is_legal_name(variable_name):
+    words = split_variable_name(variable_name)
     return all([is_word(word) for word in words])
 
 def naming_style_check(xml):
@@ -40,5 +49,5 @@ def naming_style_check(xml):
         if not is_legal_name(variable_name):
             bad_naming_style_count += 1
 
-    result['bad_naming_style_count'] = str(bad_naming_style_count)
+    result['bad_naming_style_count'] = bad_naming_style_count
     return result
