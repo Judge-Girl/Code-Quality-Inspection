@@ -16,15 +16,16 @@ import java.io.StringReader;
 public class CodingStyleAnalyzeReport {
     public String rawString;
     private Document resultXml;
+    private Element xmlRootElement;
 
     public CodingStyleAnalyzeReport(String result) {
         rawString = result;
         resultXml = convertStringToXMLDocument(result);
+        xmlRootElement = resultXml.getDocumentElement();
     }
 
     public int getScore() {
-        Element rootElement = resultXml.getDocumentElement();
-        return Integer.parseInt(rootElement.getAttribute("score"));
+        return Integer.parseInt(xmlRootElement.getAttribute("score"));
     }
 
     private Document convertStringToXMLDocument(String xmlString) {

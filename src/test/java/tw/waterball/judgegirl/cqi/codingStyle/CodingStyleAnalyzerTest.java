@@ -16,6 +16,18 @@ class CodingStyleAnalyzerTest {
     @Test
     void test() {
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/teamcode");
-        assertEquals(0, report.getScore());
+        assertEquals(-87, report.getScore());
+    }
+
+    @Test
+    void testGlobalVariableCount() {
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/globalvar");
+        assertEquals(-18, report.getScore());
+    }
+
+    @Test
+    void testBadNamingStyleCount() {
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/namingstyle");
+        assertEquals(-12, report.getScore());
     }
 }

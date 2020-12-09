@@ -7,6 +7,11 @@ try:
 except ImportError:
     import xml.etree.ElementTree as XML
 
+from rules.global_variable import global_variable_check
+from rules.naming_style import naming_style_check
+
+rules = [global_variable_check,
+         naming_style_check]
 
 def dump_cpp_check_result(file_path):
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -22,5 +27,10 @@ def dump_cpp_check_result(file_path):
 
 def analyze_code_style(path):
     xml = XML.fromstring(dump_cpp_check_result(path))
-    # TODO: parse dump result with rules
-    return None
+    xml = xml.find('dump')
+
+    result = dict()
+    for rule in rules:
+        result = {**result, **rule(xml)}
+
+    return result

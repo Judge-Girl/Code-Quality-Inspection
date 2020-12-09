@@ -18,7 +18,12 @@ def create_xml_element_with_path(tag_name, path):
 def analyze_file(path, config):
     xml = create_xml_element_with_path('file', path)
     check_result = analyze_code_style(path)
-    xml.set('score', '0')
+    for key in check_result:
+        xml.set(key, str(check_result[key]))
+
+    score_formula = config.formula.format(**xml.attrib)
+    score = eval(score_formula)
+    xml.set('score', str(score))
     return xml
 
 
