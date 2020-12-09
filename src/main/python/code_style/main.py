@@ -13,7 +13,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("source_root")
     parser.add_argument("--formula", type=str, default="-{global_variable_count}-{bad_naming_style_count}")
-    parser.add_argument("--disable-single-character-word", type=bool, default=False)
+    parser.add_argument("--disable-single-character-word", action="store_true")
     parser.add_argument("--variable-whitelist", type=str, default="", help="Whitelist of variable. Seperate by ','.")
     args = parser.parse_args()
     return args

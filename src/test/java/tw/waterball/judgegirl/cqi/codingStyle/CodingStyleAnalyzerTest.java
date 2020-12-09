@@ -3,6 +3,9 @@ package tw.waterball.judgegirl.cqi.codingStyle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CodingStyleAnalyzerTest {
@@ -16,7 +19,7 @@ class CodingStyleAnalyzerTest {
     @Test
     void test() {
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/teamcode");
-        assertEquals(-87, report.getScore());
+        assertEquals(-127, report.getScore());
     }
 
     @Test
@@ -28,6 +31,13 @@ class CodingStyleAnalyzerTest {
     @Test
     void testBadNamingStyleCount() {
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/namingstyle");
-        assertEquals(-12, report.getScore());
+        assertEquals(-38, report.getScore());
+    }
+
+    @Test
+    void testWhitelist() {
+        List<String> whitelist = Arrays.asList("i", "j", "k");
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/whitelist", whitelist);
+        assertEquals(-23, report.getScore());
     }
 }
