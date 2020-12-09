@@ -17,7 +17,7 @@ def create_xml_element_with_path(tag_name, path):
 
 def analyze_file(path, config):
     xml = create_xml_element_with_path('file', path)
-    check_result = analyze_code_style(path)
+    check_result = analyze_code_style(path, config)
     for key in check_result:
         xml.set(key, str(check_result[key]))
 

@@ -4,24 +4,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author edisonhello edisonhello@hotmail.com
  */
 
 public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
-    @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
+        return analyze(sourceRoot, new ArrayList<>());
+    }
+
+    @Override
+    public CodingStyleAnalyzeReport analyze(String sourceRoot, List<String> variableWhitelist) {
         try {
-            String result = callPython(sourceRoot);
+            String result = callPython(sourceRoot, variableWhitelist);
             return new CodingStyleAnalyzeReport(result);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String callPython(String sourceRoot) throws InterruptedException, IOException {
-        Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot).start();
+    private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {
+        Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot,
+                                                   "--disable-single-character-word",
+                                                   "--variable-whitelist", String.join(",", variableWhitelist)).start();
         pythonProcess.waitFor();
         return readProcessOutput(pythonProcess);
     }

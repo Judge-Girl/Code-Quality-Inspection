@@ -5,7 +5,7 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 
-def global_variable_check(xml):
+def global_variable_check(xml, config):
     variables_node = xml.find('variables')
     result = dict()
     result['global_variable_count'] = len([node for node in variables_node if node.attrib['access'] == 'Global'])
