@@ -7,6 +7,8 @@ try:
 except ImportError:
     import xml.etree.ElementTree as XML
 
+from Config import Config
+
 from rules.global_variable import global_variable_check
 from rules.naming_style import naming_style_check
 
@@ -26,7 +28,7 @@ def dump_cpp_check_result(file_path):
     return dump_content
 
 
-def analyze_code_style(path, config):
+def analyze_code_style(path, config: Config):
     xml = XML.fromstring(dump_cpp_check_result(path))
     xml = xml.find('dump')
 

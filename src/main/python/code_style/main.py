@@ -7,7 +7,7 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from analyzer import analyze
-
+from Config import Config
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -21,7 +21,7 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    xml = analyze(args.source_root, args)
+    xml = analyze(args.source_root, Config(args))
     print(XML.tostring(xml).decode())
 
 

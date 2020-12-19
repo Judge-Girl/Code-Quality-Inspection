@@ -7,6 +7,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as XML
 
+from Config import Config
 
 def is_word(s):
     return s.lower() in words.words()
@@ -37,12 +38,16 @@ def split_variable_name(variable_name):
     return words
 
 
+def is_legal_word(word: str, config: Config) -> bool:
+    return is_word(word) and (not config.disable_single_character_word or len(word) > 1)
+
+
 def is_legal_name(variable_name, config):
     if variable_name in config.variable_whitelist.split(','):
         return True
 
     words = split_variable_name(variable_name)
-    return all([is_word(word) and (not config.disable_single_character_word or len(word) > 1) for word in words])
+    return all([is_legal_word(word, config) for word in words])
 
 
 def naming_style_check(xml, config):

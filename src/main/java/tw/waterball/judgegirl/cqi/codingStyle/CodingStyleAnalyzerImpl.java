@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
-        return analyze(sourceRoot, new ArrayList<>());
+        return analyze(sourceRoot, Collections.emptyList());
     }
 
     @Override
