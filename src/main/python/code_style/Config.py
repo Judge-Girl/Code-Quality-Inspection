@@ -1,6 +1,6 @@
 class Config:
-    def __init__(self, args: dict):
-        self.source_root = args.source_root
-        self.formula = args.formula
-        self.disable_single_character_word = args.disable_single_character_word
-        self.variable_whitelist = args.variable_whitelist
+    def __init__(self, source_root: str, formula: str, disable_single_character_word: str, variable_whitelist: str, **kwargs):
+        self.source_root = source_root
+        self.formula = formula
+        self.disable_single_character_word = disable_single_character_word
+        self.variable_whitelist = variable_whitelist
