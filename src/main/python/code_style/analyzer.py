@@ -7,6 +7,8 @@ try:
 except ImportError:
     import xml.etree.ElementTree as XML
 
+from Config import Config
+
 
 def create_xml_element_with_path(tag_name, path):
     xml = XML.Element(tag_name)
@@ -15,9 +17,9 @@ def create_xml_element_with_path(tag_name, path):
     return xml
 
 
-def analyze_file(path, config):
+def analyze_file(path, config: Config):
     xml = create_xml_element_with_path('file', path)
-    check_result = analyze_code_style(path)
+    check_result = analyze_code_style(path, config)
     for key in check_result:
         xml.set(key, str(check_result[key]))
 
@@ -27,7 +29,7 @@ def analyze_file(path, config):
     return xml
 
 
-def analyze_folder(folder_path, config):
+def analyze_folder(folder_path, config: Config):
     xml = create_xml_element_with_path('folder', folder_path)
 
     child_score_sum = 0
@@ -43,7 +45,7 @@ def analyze_folder(folder_path, config):
     return xml
 
 
-def analyze(path, config):
+def analyze(path, config: Config):
     if os.path.isfile(path):
         return analyze_file(path, config)
     else:
