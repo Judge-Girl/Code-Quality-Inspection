@@ -19,7 +19,39 @@
 
     <groupId>tw.waterball.judge-girl</groupId>
     <artifactId>code-quality-inspection</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-alpha</version>
+
+    <name>tw.waterball.judge-girl:code-quality-inspection</name>
+    <description>A code quality inspection (CQI) implementation, which consists several algorithms to
+        evaluate the code quality (Currently support Cyclomatic Complexity Calculation (CCC) and Coding Style Analysis
+        (CSA).
+    </description>
+    <url>https://github.com/Judge-Girl/Code-Quality-Inspection</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Johnny Pan (Waterball)</name>
+            <email>johnny850807@gmail.com</email>
+        </developer>
+        <developer>
+            <name>edisonhello</name>
+            <email>edisonhello@hotmail.com</email>
+        </developer>
+        <developer>
+            <name>Giver</name>
+            <email>ryan01234keroro56789@gmail.com</email>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com:Judge-Girl/Code-Quality-Inspection.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Judge-Girl/Code-Quality-Inspection.git</developerConnection>
+        <url>https://github.com/Judge-Girl/Code-Quality-Inspection/tree/main</url>
+    </scm>
 
     <properties>
         <jupiter.version>5.6.2</jupiter.version>
