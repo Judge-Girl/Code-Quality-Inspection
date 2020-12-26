@@ -21,6 +21,8 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author edisonhello edisonhello@hotmail.com
@@ -39,6 +41,14 @@ public class CodingStyleAnalyzeReport {
 
     public int getScore() {
         return Integer.parseInt(xmlRootElement.getAttribute("score"));
+    }
+
+    public List<String> getBadNamingStyleList() {
+        return Arrays.asList(xmlRootElement.getAttribute("bad_naming_style_list").split(","));
+    }
+
+    public List<String> getGlobalVariableList() {
+        return Arrays.asList(xmlRootElement.getAttribute("global_variable_list").split(","));
     }
 
     private Document convertStringToXMLDocument(String xmlString) {
