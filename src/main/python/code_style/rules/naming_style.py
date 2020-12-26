@@ -42,7 +42,7 @@ def is_legal_word(word: str, config: Config) -> bool:
     return is_word(word) and (not config.disable_single_character_word or len(word) > 1)
 
 
-def is_legal_name(variable_name, config):
+def is_legal_name(variable_name, config: Config) -> bool:
     if variable_name in config.variable_whitelist.split(','):
         return True
 
@@ -50,17 +50,24 @@ def is_legal_name(variable_name, config):
     return all([is_legal_word(word, config) for word in words])
 
 
-def naming_style_check(xml, config):
+def naming_style_check(xml, config: Config) -> dict:
     variables_node = xml.find('variables')
     tokenlist_node = xml.find('tokenlist')
-    bad_naming_style_count = 0
     result = dict()
+    bad_naming_style_variables = []
     for variable_node in variables_node:
         variable_attr = variable_node.attrib
         variable_token_node = tokenlist_node.find(f'./token[@id=\'{variable_attr["nameToken"]}\']')
         variable_name = variable_token_node.attrib['str']
         if not is_legal_name(variable_name, config):
-            bad_naming_style_count += 1
+            bad_naming_style_variables.append(variable_name)
 
-    result['bad_naming_style_count'] = bad_naming_style_count
+    result['bad_naming_style_count'] = len(bad_naming_style_variables)
+    result['bad_naming_style_list'] = ','.join(bad_naming_style_variables)
+    return result
+
+
+def naming_style_child_collector(child_results, config: Config) -> dict:
+    result = dict()
+    result['bad_naming_style_list'] = ','.join([child_result['bad_naming_style_list'] for child_result in child_results])
     return result
