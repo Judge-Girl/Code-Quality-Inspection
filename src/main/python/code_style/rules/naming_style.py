@@ -54,20 +54,20 @@ def naming_style_check(xml, config: Config) -> dict:
     variables_node = xml.find('variables')
     tokenlist_node = xml.find('tokenlist')
     result = dict()
-    bad_naming_style_variables = []
+    illegal_naming_style_variables = []
     for variable_node in variables_node:
         variable_attr = variable_node.attrib
         variable_token_node = tokenlist_node.find(f'./token[@id=\'{variable_attr["nameToken"]}\']')
         variable_name = variable_token_node.attrib['str']
         if not is_legal_name(variable_name, config):
-            bad_naming_style_variables.append(variable_name)
+            illegal_naming_style_variables.append(variable_name)
 
-    result['bad_naming_style_count'] = len(bad_naming_style_variables)
-    result['bad_naming_style_list'] = ','.join(bad_naming_style_variables)
+    result['illegal_naming_style_count'] = len(illegal_naming_style_variables)
+    result['illegal_naming_style_list'] = ','.join(illegal_naming_style_variables)
     return result
 
 
 def naming_style_child_collector(child_results, config: Config) -> dict:
     result = dict()
-    result['bad_naming_style_list'] = ','.join([child_result['bad_naming_style_list'] for child_result in child_results])
+    result['illegal_naming_style_list'] = ','.join([child_result['illegal_naming_style_list'] for child_result in child_results])
     return result

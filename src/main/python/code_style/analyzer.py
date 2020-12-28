@@ -27,14 +27,14 @@ def create_xml_element_with_path(tag_name, path):
 
 def analyze_file(path, config: Config):
     xml = create_xml_element_with_path('file', path)
-    check_result = analyze_code_style(path, config)
-    for key in check_result:
-        xml.set(key, str(check_result[key]))
+    coding_style_analyze_result = analyze_code_style(path, config)
+    for key in coding_style_analyze_result:
+        xml.set(key, str(coding_style_analyze_result[key]))
 
     score_formula = config.formula.format(**xml.attrib)
     score = eval(score_formula)
     xml.set('score', str(score))
-    return xml, check_result
+    return xml, coding_style_analyze_result
 
 
 def analyze_folder(folder_path, config: Config):

@@ -25,11 +25,11 @@ import java.util.List;
 public class CodingStyleAnalyzeReport {
     private int score;
     private String formula;
-    private List<String> badNamingStyleList, globalVariableList;
-    public CodingStyleAnalyzeReport(int score, String formula, List<String> badNamingStyleList, List<String> globalVariableList) {
+    private List<String> illegalNamingStyleList, globalVariableList;
+    public CodingStyleAnalyzeReport(int score, String formula, List<String> illegalNamingStyleList, List<String> globalVariableList) {
         this.score = score;
         this.formula = formula;
-        this.badNamingStyleList = badNamingStyleList;
+        this.illegalNamingStyleList = illegalNamingStyleList;
         this.globalVariableList = globalVariableList;
     }
 
@@ -42,7 +42,7 @@ public class CodingStyleAnalyzeReport {
     }
 
     public List<String> getBadNamingStyleList() {
-        return badNamingStyleList;
+        return illegalNamingStyleList;
     }
 
     public List<String> getGlobalVariableList() {

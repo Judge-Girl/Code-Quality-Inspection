@@ -49,9 +49,9 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     private CodingStyleAnalyzeReport buildReportFromXmlRoot(Element xmlRootElement) {
         int score = Integer.parseInt(xmlRootElement.getAttribute("score"));
         String formula = xmlRootElement.getAttribute("using_formula");
-        List<String> badNamingStyleList = Arrays.asList(xmlRootElement.getAttribute("bad_naming_style_list").split(","));
+        List<String> illegalNamingStyleList = Arrays.asList(xmlRootElement.getAttribute("illegal_naming_style_list").split(","));
         List<String> globalVariableList = Arrays.asList(xmlRootElement.getAttribute("global_variable_list").split(","));
-        return new CodingStyleAnalyzeReport(score, formula, badNamingStyleList, globalVariableList);
+        return new CodingStyleAnalyzeReport(score, formula, illegalNamingStyleList, globalVariableList);
     }
 
     private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {

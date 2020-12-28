@@ -16,9 +16,9 @@ package tw.waterball.judgegirl.cqi.codingStyle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,16 +60,12 @@ class CodingStyleAnalyzerTest {
     void testDetailReport() {
         List<String> whitelist = Arrays.asList("i", "j", "k");
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/minidetailtest", whitelist);
-        List<String> badNamingStyleList = report.getBadNamingStyleList();
+        List<String> illegalNamingStyleList = report.getBadNamingStyleList();
         List<String> globalVariablesList = report.getGlobalVariableList();
         List<String> expectBadNamingStyleList = Arrays.asList("l", "m", "n");
-        List<String> expectGlobarVariablesList = Arrays.asList("global");
-        Collections.sort(badNamingStyleList);
-        Collections.sort(globalVariablesList);
-        Collections.sort(expectBadNamingStyleList);
-        Collections.sort(expectGlobarVariablesList);
-        assertEquals(badNamingStyleList, expectBadNamingStyleList);
-        assertEquals(globalVariablesList, expectGlobarVariablesList);
-        assertEquals(report.getFormula(), "-{global_variable_count}-{bad_naming_style_count}");
+        List<String> expectGlobalVariablesList = Arrays.asList("global");
+        assertEquals(new HashSet<>(illegalNamingStyleList), new HashSet<>(expectBadNamingStyleList));
+        assertEquals(new HashSet<>(globalVariablesList), new HashSet<>(expectGlobalVariablesList));
+        assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_count}");
     }
 }
