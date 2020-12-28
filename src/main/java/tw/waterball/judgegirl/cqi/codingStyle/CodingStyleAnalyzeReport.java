@@ -41,7 +41,7 @@ public class CodingStyleAnalyzeReport {
        return formula;
     }
 
-    public List<String> getBadNamingStyleList() {
+    public List<String> getIllegalNamingStyleList() {
         return illegalNamingStyleList;
     }
 

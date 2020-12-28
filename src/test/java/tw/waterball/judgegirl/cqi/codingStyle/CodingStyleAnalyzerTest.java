@@ -60,11 +60,11 @@ class CodingStyleAnalyzerTest {
     void testDetailReport() {
         List<String> whitelist = Arrays.asList("i", "j", "k");
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/minidetailtest", whitelist);
-        List<String> illegalNamingStyleList = report.getBadNamingStyleList();
+        List<String> illegalNamingStyleList = report.getIllegalNamingStyleList();
         List<String> globalVariablesList = report.getGlobalVariableList();
-        List<String> expectBadNamingStyleList = Arrays.asList("l", "m", "n");
+        List<String> expectIllegalNamingStyleList = Arrays.asList("l", "m", "n");
         List<String> expectGlobalVariablesList = Arrays.asList("global");
-        assertEquals(new HashSet<>(illegalNamingStyleList), new HashSet<>(expectBadNamingStyleList));
+        assertEquals(new HashSet<>(illegalNamingStyleList), new HashSet<>(expectIllegalNamingStyleList));
         assertEquals(new HashSet<>(globalVariablesList), new HashSet<>(expectGlobalVariablesList));
         assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_count}");
     }
