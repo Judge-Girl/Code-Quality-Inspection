@@ -21,7 +21,9 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    xml, _ = analyze(args.source_root, Config(**args.__dict__))
+    config = Config(**args.__dict__)
+    xml, _ = analyze(args.source_root, config)
+    xml.set('using_formula', config.formula)
     print(XML.tostring(xml).decode())
 
 

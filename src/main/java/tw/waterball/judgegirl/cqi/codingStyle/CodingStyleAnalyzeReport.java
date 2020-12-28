@@ -24,15 +24,21 @@ import java.util.List;
 
 public class CodingStyleAnalyzeReport {
     private int score;
+    private String formula;
     private List<String> badNamingStyleList, globalVariableList;
-    public CodingStyleAnalyzeReport(int score, List<String> badNamingStyleList, List<String> globalVariableList) {
+    public CodingStyleAnalyzeReport(int score, String formula, List<String> badNamingStyleList, List<String> globalVariableList) {
         this.score = score;
+        this.formula = formula;
         this.badNamingStyleList = badNamingStyleList;
         this.globalVariableList = globalVariableList;
     }
 
     public int getScore() {
         return score;
+    }
+
+    public String getFormula() {
+       return formula;
     }
 
     public List<String> getBadNamingStyleList() {

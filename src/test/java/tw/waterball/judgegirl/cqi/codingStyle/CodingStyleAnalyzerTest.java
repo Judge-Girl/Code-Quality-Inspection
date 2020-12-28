@@ -70,5 +70,6 @@ class CodingStyleAnalyzerTest {
         Collections.sort(expectGlobarVariablesList);
         assertEquals(badNamingStyleList, expectBadNamingStyleList);
         assertEquals(globalVariablesList, expectGlobarVariablesList);
+        assertEquals(report.getFormula(), "-{global_variable_count}-{bad_naming_style_count}");
     }
 }
