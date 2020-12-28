@@ -13,11 +13,14 @@
 
 package tw.waterball.judgegirl.cqi.codingStyle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,11 +36,21 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot, List<String> variableWhitelist) {
         try {
-            String result = callPython(sourceRoot, variableWhitelist);
-            return new CodingStyleAnalyzeReport(result);
+            String xmlResult = callPython(sourceRoot, variableWhitelist);
+            Document resultXml = convertStringToXMLDocument(xmlResult);
+            Element xmlRootElement = resultXml.getDocumentElement();
+
+            return buildReportFromXmlRoot(xmlRootElement);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CodingStyleAnalyzeReport buildReportFromXmlRoot(Element xmlRootElement) {
+        int score = Integer.parseInt(xmlRootElement.getAttribute("score"));
+        List<String> badNamingStyleList = Arrays.asList(xmlRootElement.getAttribute("bad_naming_style_list").split(","));
+        List<String> globalVariableList = Arrays.asList(xmlRootElement.getAttribute("global_variable_list").split(","));
+        return new CodingStyleAnalyzeReport(score, badNamingStyleList, globalVariableList);
     }
 
     private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {
@@ -63,6 +76,16 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             }
 
             return totalResult;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Document convertStringToXMLDocument(String xmlString) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(new InputSource(new StringReader(xmlString)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
