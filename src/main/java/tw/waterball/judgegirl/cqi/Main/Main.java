@@ -1,4 +1,4 @@
-package tw.waterball.judgegirl.cqi.Main;
+package tw.waterball.judgegirl.cqi.main;
 
 import tw.waterball.judgegirl.cqi.codingStyle.CodingStyleAnalyzeReport;
 import tw.waterball.judgegirl.cqi.codingStyle.CodingStyleAnalyzer;

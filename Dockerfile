@@ -11,5 +11,5 @@ RUN python3 -m nltk.downloader words
 COPY target/*.jar /app.jar
 COPY src/main/python/code_style /code_style
 
-ENTRYPOINT ["java","-cp","/app.jar","tw.waterball.judgegirl.cqi.Main.Main"]
+ENTRYPOINT ["java","-cp","/app.jar","tw.waterball.judgegirl.cqi.main.Main"]
 
