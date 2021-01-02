@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +25,7 @@ import java.util.List;
  */
 
 public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
+
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         return analyze(sourceRoot, Collections.emptyList());
     }
@@ -34,6 +34,7 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     public CodingStyleAnalyzeReport analyze(String sourceRoot, List<String> variableWhitelist) {
         try {
             String result = callPython(sourceRoot, variableWhitelist);
+            System.out.printf("CSA result: %s\n", result);
             return new CodingStyleAnalyzeReport(result);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -49,7 +50,10 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     }
 
     private String getPathToPythonEntry() {
-        return "./src/main/python/code_style/main.py";
+        // TODO: a drunk way of injecting the path by env (should be improved)
+        String path = System.getenv("csa_python_main_path");
+        System.out.printf("Python src root: '%s'.\n", path);
+        return path;
     }
 
     private String readProcessOutput(Process process) {
