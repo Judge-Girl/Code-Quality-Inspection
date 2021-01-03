@@ -15,10 +15,15 @@ package tw.waterball.judgegirl.cqi.codingStyle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import javax.print.DocFlavor;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,18 +45,35 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             Document resultXml = convertStringToXMLDocument(xmlResult);
             Element xmlRootElement = resultXml.getDocumentElement();
 
-            return buildReportFromXmlRoot(xmlRootElement);
+            return buildReportFromXmlRoot(resultXml);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private CodingStyleAnalyzeReport buildReportFromXmlRoot(Element xmlRootElement) {
-        int score = Integer.parseInt(xmlRootElement.getAttribute("score"));
-        String formula = xmlRootElement.getAttribute("using_formula");
-        List<String> illegalNamingStyleList = Arrays.asList(xmlRootElement.getAttribute("illegal_naming_style_list").split(","));
-        List<String> globalVariableList = Arrays.asList(xmlRootElement.getAttribute("global_variable_list").split(","));
-        return new CodingStyleAnalyzeReport(score, formula, illegalNamingStyleList, globalVariableList);
+    private List<String> retrieveTopLevelResultList(Document xml, String tagName, String attrbuteName) {
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NodeList nodeList = (NodeList) xPath.compile("/folder/" + tagName).evaluate(xml, XPathConstants.NODESET);
+            Element element = (Element)nodeList.item(0);
+            String resultString = element.getAttribute(attrbuteName);
+            return Arrays.asList(resultString.split(","));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private CodingStyleAnalyzeReport buildReportFromXmlRoot(Document xml) {
+        try {
+            Element xmlRootElement = xml.getDocumentElement();
+            int score = Integer.parseInt(xmlRootElement.getAttribute("score"));
+            String formula = xmlRootElement.getAttribute("using_formula");
+            List<String> illegalNamingStyleList = retrieveTopLevelResultList(xml, "naming_style", "illegal_naming_style_variable_list");
+            List<String> globalVariableList = retrieveTopLevelResultList(xml, "global_variable", "global_variable_list");
+            return new CodingStyleAnalyzeReport(score, formula, illegalNamingStyleList, globalVariableList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {

@@ -66,6 +66,6 @@ class CodingStyleAnalyzerTest {
         List<String> expectGlobalVariablesList = Arrays.asList("global");
         assertEquals(new HashSet<>(illegalNamingStyleList), new HashSet<>(expectIllegalNamingStyleList));
         assertEquals(new HashSet<>(globalVariablesList), new HashSet<>(expectGlobalVariablesList));
-        assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_count}");
+        assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_variable_count}");
     }
 }

@@ -55,7 +55,7 @@ def is_legal_name(variable_name, config: Config) -> bool:
 
 class NamingStyleRuleResult(RuleResult):
     def __init__(self, illegal_naming_style_variables_list: [str] = []):
-        super().__init__('naming_style_rule')
+        super().__init__('naming_style')
         self.illegal_naming_style_variable_list = illegal_naming_style_variables_list
         self.illegal_naming_style_variable_count = len(illegal_naming_style_variables_list)
 

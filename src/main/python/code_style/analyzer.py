@@ -81,7 +81,12 @@ def analyze_folder(folder_path, config: Config):
         rule_child_results = []
         for child_result in child_results:
             rule_child_results.append(child_result.coding_style_analyze_result[rule.rule_name])
-        rule_results[rule.rule_name] = rule.child_result_collector(rule_child_results, config)
+        child_result = rule.child_result_collector(rule_child_results, config)
+        rule_results[rule.rule_name] = child_result
+
+    for rule_name in rule_results:
+        child_xml = generate_xml_from_result(rule_results[rule_name])
+        xml.append(child_xml)
 
     child_score_sum = 0
     for child_result in child_results:
