@@ -8,14 +8,24 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from Config import Config
+from Rules.RuleResult import RuleResult
+from Rules.GlobalVariable import GlobalVariableRule
+from Rules.NamingStyle import NamingStyleRule
 
-from rules.global_variable import global_variable_child_collector
-from rules.naming_style import naming_style_child_collector
+rules = [GlobalVariableRule,
+         NamingStyleRule]
 
-child_collectors = [
-    global_variable_child_collector,
-    naming_style_child_collector,
-]
+rules = map(lambda x: x(), rules)
+# TODO: move to config
+
+
+class AnalyzeResult:
+    def __init__(self, xml, coding_style_analyze_result: dict):
+        self.xml = xml
+        self.coding_style_analyze_result = coding_style_analyze_result
+
+    def get_score(self):
+        return int(self.xml.get('score'))
 
 
 def create_xml_element_with_path(tag_name, path):
@@ -25,45 +35,63 @@ def create_xml_element_with_path(tag_name, path):
     return xml
 
 
-def analyze_file(path, config: Config):
-    xml = create_xml_element_with_path('file', path)
-    coding_style_analyze_result = analyze_code_style(path, config)
-    for key in coding_style_analyze_result:
-        xml.set(key, str(coding_style_analyze_result[key]))
+def generate_xml_from_result(result: RuleResult):
+    xml = XML.Element(result.rule_name)
+    result_dict = result.serialize()
+    for key in result_dict:
+        xml.set(key, str(result_dict[key]))
+    return xml
 
-    score_formula = config.formula.format(**xml.attrib)
+
+def calculate_score(coding_style_analyze_result, config: Config) -> int:
+    result_dict = dict()
+    for rule_name in coding_style_analyze_result:
+        result_dict = {**result_dict, **coding_style_analyze_result[rule_name].serialize()}
+    score_formula = config.formula.format(**result_dict)
     score = eval(score_formula)
+    return score
+
+
+def analyze_file(path, config: Config) -> AnalyzeResult:
+    coding_style_analyze_result = analyze_code_style(path, config)
+
+    xml = create_xml_element_with_path('file', path)
+    for result_key in coding_style_analyze_result:
+        child_xml = generate_xml_from_result(coding_style_analyze_result[result_key])
+        xml.append(child_xml)
+
+    score = calculate_score(coding_style_analyze_result, config)
     xml.set('score', str(score))
-    return xml, coding_style_analyze_result
+
+    return AnalyzeResult(xml=xml, coding_style_analyze_result=coding_style_analyze_result)
 
 
 def analyze_folder(folder_path, config: Config):
-    xml = create_xml_element_with_path('folder', folder_path)
     child_results = []
-
-    child_score_sum = 0
     for path in os.listdir(folder_path):
         full_path = os.path.join(folder_path, path)
-        child_xml, child_result = analyze(full_path, config)
-        xml.append(child_xml)
-        child_results.append(child_result)
+        child_results.append(analyze(full_path, config))
 
-        child_score_sum += int(child_xml.get('score'))
+    xml = create_xml_element_with_path('folder', folder_path)
+    for child_result in child_results:
+        xml.append(child_result.xml)
 
+    rule_results = dict()
+    for rule in rules:
+        rule_child_results = []
+        for child_result in child_results:
+            rule_child_results.append(child_result.coding_style_analyze_result[rule.rule_name])
+        rule_results[rule.rule_name] = rule.child_result_collector(rule_child_results, config)
+
+    child_score_sum = 0
+    for child_result in child_results:
+        child_score_sum += child_result.get_score()
     xml.set('score', str(child_score_sum))
 
-    collect_results = {}
-    for child_collector in child_collectors:
-        collect_result = child_collector(child_results, config)
-        for key in collect_result:
-            xml.set(key, str(collect_result[key]))
-
-        collect_results = {**collect_results, **collect_result}
-
-    return xml, collect_results
+    return AnalyzeResult(xml=xml, coding_style_analyze_result=rule_results)
 
 
-def analyze(path, config: Config):
+def analyze(path, config: Config) -> AnalyzeResult:
     if os.path.isfile(path):
         return analyze_file(path, config)
     else:

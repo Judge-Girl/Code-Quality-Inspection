@@ -9,11 +9,13 @@ except ImportError:
 
 from Config import Config
 
-from rules.global_variable import global_variable_check
-from rules.naming_style import naming_style_check
+from Rules.GlobalVariable import GlobalVariableRule
+from Rules.NamingStyle import NamingStyleRule
 
-rules = [global_variable_check,
-         naming_style_check]
+rules = [GlobalVariableRule,
+         NamingStyleRule]
+
+rules = map(lambda x: x(), rules)
 
 
 def dump_cpp_check_result(file_path):
@@ -28,12 +30,12 @@ def dump_cpp_check_result(file_path):
     return dump_content
 
 
-def analyze_code_style(path, config: Config):
+def analyze_code_style(path, config: Config) -> dict:
     xml = XML.fromstring(dump_cpp_check_result(path))
     xml = xml.find('dump')
 
-    result = dict()
+    rule_results = dict()
     for rule in rules:
-        result = {**result, **rule(xml, config)}
+        rule_results[rule.rule_name] = rule.apply_rule(xml, config)
 
-    return result
+    return rule_results
