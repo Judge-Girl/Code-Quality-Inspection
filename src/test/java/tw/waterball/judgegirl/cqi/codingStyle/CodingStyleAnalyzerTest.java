@@ -68,4 +68,15 @@ class CodingStyleAnalyzerTest {
         assertEquals(new HashSet<>(globalVariablesList), new HashSet<>(expectGlobalVariablesList));
         assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_variable_count}");
     }
+
+    @Test
+    void testEmptyList() {
+        List<String> whitelist = Arrays.asList("a");
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/perfectcode", whitelist);
+        List<String> illegalNamingStyleList = report.getIllegalNamingStyleList();
+        List<String> globalVariablesList = report.getGlobalVariableList();
+        assertEquals(0, report.getScore());
+        assertEquals(0, illegalNamingStyleList.size());
+        assertEquals(0, globalVariablesList.size());
+    }
 }

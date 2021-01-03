@@ -57,7 +57,13 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             NodeList nodeList = (NodeList) xPath.compile("/folder/" + tagName).evaluate(xml, XPathConstants.NODESET);
             Element element = (Element)nodeList.item(0);
             String resultString = element.getAttribute(attrbuteName);
-            return Arrays.asList(resultString.split(","));
+            String[] strings = resultString.split(",");
+
+            if (strings.length == 1 && strings[0] == "") {
+                return Collections.emptyList();
+            } else {
+                return Arrays.asList(strings);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
