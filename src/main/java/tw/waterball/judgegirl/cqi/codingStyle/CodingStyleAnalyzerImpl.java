@@ -15,10 +15,10 @@ package tw.waterball.judgegirl.cqi.codingStyle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.print.DocFlavor;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -43,7 +43,6 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
         try {
             String xmlResult = callPython(sourceRoot, variableWhitelist);
             Document resultXml = convertStringToXMLDocument(xmlResult);
-            Element xmlRootElement = resultXml.getDocumentElement();
 
             return buildReportFromXmlRoot(resultXml);
         } catch (Exception e) {
@@ -51,21 +50,25 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
         }
     }
 
-    private List<String> retrieveTopLevelResultList(Document xml, String tagName, String attrbuteName) {
+    private Node getXmlNodeByXPath(Document xml, String xPath) {
         try {
-            XPath xPath = XPathFactory.newInstance().newXPath();
-            NodeList nodeList = (NodeList) xPath.compile("/folder/" + tagName).evaluate(xml, XPathConstants.NODESET);
-            Element element = (Element)nodeList.item(0);
-            String resultString = element.getAttribute(attrbuteName);
-            String[] strings = resultString.split(",");
-
-            if (strings.length == 1 && strings[0] == "") {
-                return Collections.emptyList();
-            } else {
-                return Arrays.asList(strings);
-            }
+            XPath xPathInstance = XPathFactory.newInstance().newXPath();
+            NodeList nodeList = (NodeList) xPathInstance.compile(xPath).evaluate(xml, XPathConstants.NODESET);
+            return nodeList.item(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private List<String> retrieveTopLevelResultList(Document xml, String tagName, String attrbuteName) {
+        Element element = (Element)getXmlNodeByXPath(xml, "/folder/" + tagName);
+        String resultString = element.getAttribute(attrbuteName);
+        String[] strings = resultString.split(",");
+
+        if (strings.length == 1 && strings[0].equals("")) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(strings);
         }
     }
 
@@ -99,12 +102,13 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             InputStream stdout = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
 
-            String totalResult = "", line;
+            StringBuilder totalResult = new StringBuilder();
+            String line;
             while ((line = reader.readLine()) != null) {
-                totalResult += line;
+                totalResult.append(line);
             }
 
-            return totalResult;
+            return totalResult.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

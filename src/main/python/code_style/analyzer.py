@@ -9,14 +9,6 @@ except ImportError:
 
 from Config import Config
 from Rules.RuleResult import RuleResult
-from Rules.GlobalVariable import GlobalVariableRule
-from Rules.NamingStyle import NamingStyleRule
-
-rules = [GlobalVariableRule,
-         NamingStyleRule]
-
-rules = map(lambda x: x(), rules)
-# TODO: move to config
 
 
 class AnalyzeResult:
@@ -77,7 +69,7 @@ def analyze_folder(folder_path, config: Config):
         xml.append(child_result.xml)
 
     rule_results = dict()
-    for rule in rules:
+    for rule in config.rules:
         rule_child_results = []
         for child_result in child_results:
             rule_child_results.append(child_result.coding_style_analyze_result[rule.rule_name])
@@ -101,3 +93,8 @@ def analyze(path, config: Config) -> AnalyzeResult:
         return analyze_file(path, config)
     else:
         return analyze_folder(path, config)
+
+def analyze_root(path, config: Config) -> AnalyzeResult:
+    xml = analyze(path, config).xml
+    xml.set('using_formula', config.formula)
+    return xml

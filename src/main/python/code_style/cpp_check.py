@@ -9,14 +9,6 @@ except ImportError:
 
 from Config import Config
 
-from Rules.GlobalVariable import GlobalVariableRule
-from Rules.NamingStyle import NamingStyleRule
-
-rules = [GlobalVariableRule,
-         NamingStyleRule]
-
-rules = map(lambda x: x(), rules)
-
 
 def dump_cpp_check_result(file_path):
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -35,7 +27,7 @@ def analyze_code_style(path, config: Config) -> dict:
     xml = xml.find('dump')
 
     rule_results = dict()
-    for rule in rules:
+    for rule in config.rules:
         rule_results[rule.rule_name] = rule.apply_rule(xml, config)
 
     return rule_results
