@@ -1,4 +1,6 @@
 
+from typing import Dict, List
+
 try:
     import xml.etree.cElementTree as XML
 except ImportError:
@@ -10,19 +12,19 @@ from Rules.RuleResult import RuleResult
 
 
 class GlobalVariableResult(RuleResult):
-    def __init__(self, global_variable_list: [str] = []):
+    def __init__(self, global_variable_list: List[str] = []):
         super().__init__('global_variable')
         self.global_variable_list = global_variable_list
         self.global_variable_count = len(global_variable_list)
 
-    def serialize(self) -> dict:
+    def serialize(self) -> Dict:
         result = dict()
         result['global_variable_list'] = ','.join(self.global_variable_list)
         result['global_variable_count'] = str(self.global_variable_count)
         return result
 
     @staticmethod
-    def collect_from_child(child_results: list):
+    def collect_from_child(child_results: List):
         child_result_list = []
         for child_result in child_results:
             child_result_list += child_result.global_variable_list

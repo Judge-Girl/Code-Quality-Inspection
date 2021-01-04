@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import List, Dict
 from nltk.corpus import words
 import re
 
@@ -12,15 +13,15 @@ from Rules.Rule import Rule
 from Rules.RuleResult import RuleResult
 
 
-def is_word(s):
+def is_word(s: str) -> bool:
     return s.lower() in words.words()
 
 
-def is_underscore_naming_style(s):
+def is_underscore_naming_style(s: str):
     return re.search('_', s)
 
 
-def split_by_uppercase(x, y):
+def split_by_uppercase(x: List[str], y: str):
     """
     Usage:
         words = reduce(split_by_uppercase, 'theBigCat', [''])
@@ -33,7 +34,7 @@ def split_by_uppercase(x, y):
         return x
 
 
-def split_variable_name(variable_name):
+def split_variable_name(variable_name: str) -> List[str]:
     if is_underscore_naming_style(variable_name):
         words = variable_name.split('_')
     else:
@@ -45,7 +46,7 @@ def is_legal_word(word: str, config: Config) -> bool:
     return is_word(word) and (not config.disable_single_character_word or len(word) > 1)
 
 
-def is_legal_name(variable_name, config: Config) -> bool:
+def is_legal_name(variable_name: str, config: Config) -> bool:
     if variable_name in config.variable_whitelist.split(','):
         return True
 
@@ -59,14 +60,14 @@ class NamingStyleRuleResult(RuleResult):
         self.illegal_naming_style_variable_list = illegal_naming_style_variables_list
         self.illegal_naming_style_variable_count = len(illegal_naming_style_variables_list)
 
-    def serialize(self) -> dict:
+    def serialize(self) -> Dict:
         result = dict()
         result['illegal_naming_style_variable_list'] = ','.join(self.illegal_naming_style_variable_list)
         result['illegal_naming_style_variable_count'] = str(self.illegal_naming_style_variable_count)
         return result
 
     @staticmethod
-    def collect_from_child(child_results: list):
+    def collect_from_child(child_results: List):
         child_result_list = []
         for child_result in child_results:
             child_result_list += child_result.illegal_naming_style_variable_list
@@ -93,6 +94,6 @@ class NamingStyleRule(Rule):
         result = NamingStyleRuleResult(illegal_naming_style_variables_list=illegal_naming_style_variables)
         return result
 
-    def child_result_collector(self, child_results: [RuleResult], config: Config) -> RuleResult:
+    def child_result_collector(self, child_results: List[RuleResult], config: Config) -> RuleResult:
         return NamingStyleRuleResult.collect_from_child(child_results)
 

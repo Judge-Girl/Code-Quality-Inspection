@@ -1,5 +1,6 @@
+
 import argparse
-import sys
+from typing import List
 
 try:
     import xml.etree.cElementTree as XML
@@ -21,12 +22,12 @@ def parse_arguments():
     parser.add_argument("--disable-naming-style-check", action="store_true")
     parser.add_argument("--disable-global-variable-check", action="store_true")
     parser.add_argument("--disable-single-character-word", action="store_true")
-    parser.add_argument("--variable-whitelist", type=str, default="", help="Whitelist of variable name. Seperate by ','.")
+    parser.add_argument("--variable-whitelist", type=str, default="", help="Whitelist of variable names. Seperated by ','.")
     args = parser.parse_args()
     return args
 
 
-def generate_rule_list(config: Config) -> [Rule]:
+def generate_rule_list(config: Config) -> List[Rule]:
     rule_list = []
     if not config.disable_naming_style_check:
         rule_list.append(NamingStyleRule())

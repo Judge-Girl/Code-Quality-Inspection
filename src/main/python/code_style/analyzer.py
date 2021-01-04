@@ -1,18 +1,20 @@
 
+from typing import Dict
 import os
-from cpp_check import analyze_code_style
 
 try:
     import xml.etree.cElementTree as XML
 except ImportError:
     import xml.etree.ElementTree as XML
 
+from cpp_check import analyze_code_style
+
 from Config import Config
 from Rules.RuleResult import RuleResult
 
 
 class AnalyzeResult:
-    def __init__(self, xml, coding_style_analyze_result: dict):
+    def __init__(self, xml, coding_style_analyze_result: Dict):
         self.xml = xml
         self.coding_style_analyze_result = coding_style_analyze_result
 
@@ -93,6 +95,7 @@ def analyze(path, config: Config) -> AnalyzeResult:
         return analyze_file(path, config)
     else:
         return analyze_folder(path, config)
+
 
 def analyze_root(path, config: Config) -> AnalyzeResult:
     xml = analyze(path, config).xml

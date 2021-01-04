@@ -1,6 +1,7 @@
 
 import os
 import subprocess
+from typing import Dict
 
 try:
     import xml.etree.cElementTree as XML
@@ -8,9 +9,10 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from Config import Config
+from Rules.RuleResult import RuleResult
 
 
-def dump_cpp_check_result(file_path):
+def dump_cpp_check_result(file_path: str) -> str:
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     dump_file_path = os.path.join(f'{file_path}.dump')
@@ -22,7 +24,7 @@ def dump_cpp_check_result(file_path):
     return dump_content
 
 
-def analyze_code_style(path, config: Config) -> dict:
+def analyze_code_style(path: str, config: Config) -> Dict[str, RuleResult]:
     xml = XML.fromstring(dump_cpp_check_result(path))
     xml = xml.find('dump')
 
