@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package tw.waterball.judgegirl.cqi.codingStyle;
+package tw.waterball.judgegirl.cqi.csa;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

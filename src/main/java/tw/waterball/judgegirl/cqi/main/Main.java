@@ -1,8 +1,8 @@
 package tw.waterball.judgegirl.cqi.main;
 
-import tw.waterball.judgegirl.cqi.codingStyle.CodingStyleAnalyzeReport;
-import tw.waterball.judgegirl.cqi.codingStyle.CodingStyleAnalyzer;
-import tw.waterball.judgegirl.cqi.codingStyle.CodingStyleAnalyzerImpl;
+import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzeReport;
+import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzer;
+import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzerImpl;
 import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityCalculatorImpl;
 import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityCalculator;
 import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityReport;
