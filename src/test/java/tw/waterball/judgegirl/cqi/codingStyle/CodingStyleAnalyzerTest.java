@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,5 +53,29 @@ class CodingStyleAnalyzerTest {
         List<String> whitelist = Arrays.asList("i", "j", "k");
         CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/whitelist", whitelist);
         assertEquals(-23, report.getScore());
+    }
+
+    @Test
+    void testDetailReport() {
+        List<String> whitelist = Arrays.asList("i", "j", "k");
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/minidetailtest", whitelist);
+        List<String> illegalNamingStyleList = report.getIllegalNamingStyleList();
+        List<String> globalVariablesList = report.getGlobalVariableList();
+        List<String> expectIllegalNamingStyleList = Arrays.asList("l", "m", "n");
+        List<String> expectGlobalVariablesList = Arrays.asList("global");
+        assertEquals(new HashSet<>(illegalNamingStyleList), new HashSet<>(expectIllegalNamingStyleList));
+        assertEquals(new HashSet<>(globalVariablesList), new HashSet<>(expectGlobalVariablesList));
+        assertEquals(report.getFormula(), "-{global_variable_count}-{illegal_naming_style_variable_count}");
+    }
+
+    @Test
+    void testEmptyList() {
+        List<String> whitelist = Arrays.asList("a");
+        CodingStyleAnalyzeReport report = analyzer.analyze("./testdata/codes/perfectcode", whitelist);
+        List<String> illegalNamingStyleList = report.getIllegalNamingStyleList();
+        List<String> globalVariablesList = report.getGlobalVariableList();
+        assertEquals(0, report.getScore());
+        assertEquals(0, illegalNamingStyleList.size());
+        assertEquals(0, globalVariablesList.size());
     }
 }

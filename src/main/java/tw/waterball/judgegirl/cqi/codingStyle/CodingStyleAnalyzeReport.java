@@ -13,41 +13,36 @@
 
 package tw.waterball.judgegirl.cqi.codingStyle;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
+import java.util.List;
 
 /**
  * @author edisonhello edisonhello@hotmail.com
  */
 
 public class CodingStyleAnalyzeReport {
-    public String rawString;
-    private Document resultXml;
-    private Element xmlRootElement;
-
-    public CodingStyleAnalyzeReport(String result) {
-        rawString = result;
-        resultXml = convertStringToXMLDocument(result);
-        xmlRootElement = resultXml.getDocumentElement();
+    private int score;
+    private String formula;
+    private List<String> illegalNamingStyleList, globalVariableList;
+    public CodingStyleAnalyzeReport(int score, String formula, List<String> illegalNamingStyleList, List<String> globalVariableList) {
+        this.score = score;
+        this.formula = formula;
+        this.illegalNamingStyleList = illegalNamingStyleList;
+        this.globalVariableList = globalVariableList;
     }
 
     public int getScore() {
-        return Integer.parseInt(xmlRootElement.getAttribute("score"));
+        return score;
     }
 
-    private Document convertStringToXMLDocument(String xmlString) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            return builder.parse(new InputSource(new StringReader(xmlString)));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public String getFormula() {
+       return formula;
+    }
+
+    public List<String> getIllegalNamingStyleList() {
+        return illegalNamingStyleList;
+    }
+
+    public List<String> getGlobalVariableList() {
+        return globalVariableList;
     }
 }
