@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from Rules.RuleResult import RuleResult
+from rules.RuleResult import RuleResult
 
 
 class Rule(ABC):

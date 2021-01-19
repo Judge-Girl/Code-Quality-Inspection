@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 from typing import Dict
@@ -9,16 +8,20 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from Config import Config
-from Rules.RuleResult import RuleResult
+from rules.RuleResult import RuleResult
 
+class CannotCppCheckError(Exception):
+    pass
 
 def dump_cpp_check_result(file_path: str) -> str:
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     dump_file_path = os.path.join(f'{file_path}.dump')
-    with open(dump_file_path, "r") as f:
-        dump_content = ''.join(f.readlines())
-    
+    try:
+        with open(dump_file_path, "r") as f:
+            dump_content = ''.join(f.readlines())
+    except FileNotFoundError:
+        raise CannotCppCheckError()
     os.remove(dump_file_path)
 
     return dump_content

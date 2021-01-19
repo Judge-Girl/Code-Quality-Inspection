@@ -18,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import tw.waterball.judgegirl.commons.helpers.process.AbstractProcessRunner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,7 +34,8 @@ import java.util.List;
  * @author edisonhello edisonhello@hotmail.com
  */
 
-public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
+public class CodingStyleAnalyzerImpl extends AbstractProcessRunner implements CodingStyleAnalyzer {
+
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         return analyze(sourceRoot, Collections.emptyList());
     }
@@ -41,10 +43,14 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot, List<String> variableWhitelist) {
         try {
-            String xmlResult = callPython(sourceRoot, variableWhitelist);
-            Document resultXml = convertStringToXMLDocument(xmlResult);
-
-            return buildReportFromXmlRoot(resultXml);
+            String xmlResult = callPython(sourceRoot, variableWhitelist).trim();
+            System.out.println("XML result: " + xmlResult);
+            if (xmlResult.isEmpty()) {
+                throw new IllegalStateException("XML result should not be empty.");
+            } else {
+                Document resultXml = convertStringToXMLDocument(xmlResult);
+                return buildReportFromXmlRoot(resultXml);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -86,15 +92,21 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     }
 
     private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {
+        // variable white list expect one argument otherwise ',' stands for no white list
+        String variableWhiteList = variableWhitelist.isEmpty() ? "," : String.join(",", variableWhitelist);
         Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot,
-                                                   "--disable-single-character-word",
-                                                   "--variable-whitelist", String.join(",", variableWhitelist)).start();
+                                                   // "--disable-single-character-word",
+                                                    "--variable-whitelist", variableWhiteList
+                                                ).start();
         pythonProcess.waitFor();
         return readProcessOutput(pythonProcess);
     }
 
     private String getPathToPythonEntry() {
-        return "./src/main/python/code_style/main.py";
+        // TODO: a drunk way of injecting the path by env (should be improved)
+        String path = System.getenv("csa_python_main_path");
+        System.out.printf("Python src root: '%s'.\n", path);
+        return path;
     }
 
     private String readProcessOutput(Process process) {
@@ -123,4 +135,5 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             throw new RuntimeException(e);
         }
     }
+
 }

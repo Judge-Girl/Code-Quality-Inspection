@@ -9,8 +9,8 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from Config import Config
-from Rules.Rule import Rule
-from Rules.RuleResult import RuleResult
+from rules.Rule import Rule
+from rules.RuleResult import RuleResult
 
 
 def is_word(s: str) -> bool:

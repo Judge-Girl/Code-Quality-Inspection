@@ -13,9 +13,6 @@
 
 package tw.waterball.judgegirl.cqi.codingStyle;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.util.Arrays;
 import java.util.List;
 
 /**

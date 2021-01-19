@@ -1,4 +1,3 @@
-
 from typing import Dict
 import os
 
@@ -7,10 +6,10 @@ try:
 except ImportError:
     import xml.etree.ElementTree as XML
 
-from cpp_check import analyze_code_style
+from cpp_check import analyze_code_style, CannotCppCheckError
 
 from Config import Config
-from Rules.RuleResult import RuleResult
+from rules.RuleResult import RuleResult
 
 
 class AnalyzeResult:
@@ -64,7 +63,10 @@ def analyze_folder(folder_path, config: Config):
     child_results = []
     for path in os.listdir(folder_path):
         full_path = os.path.join(folder_path, path)
-        child_results.append(analyze(full_path, config))
+        try:
+            child_results.append(analyze(full_path, config))
+        except CannotCppCheckError:
+            pass  # if cannot analyze, pass it
 
     xml = create_xml_element_with_path('folder', folder_path)
     for child_result in child_results:
