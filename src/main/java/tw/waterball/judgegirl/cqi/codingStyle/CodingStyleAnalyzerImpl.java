@@ -18,7 +18,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import tw.waterball.judgegirl.commons.helpers.process.AbstractProcessRunner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +33,7 @@ import java.util.List;
  * @author edisonhello edisonhello@hotmail.com
  */
 
-public class CodingStyleAnalyzerImpl extends AbstractProcessRunner implements CodingStyleAnalyzer {
+public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
 
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         return analyze(sourceRoot, Collections.emptyList());
