@@ -13,15 +13,12 @@
 
 package tw.waterball.judgegirl.cqi.codingStyle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import tw.waterball.judgegirl.commons.helpers.process.AbstractProcessRunner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,7 +34,7 @@ import java.util.List;
  * @author edisonhello edisonhello@hotmail.com
  */
 
-public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
+public class CodingStyleAnalyzerImpl extends AbstractProcessRunner implements CodingStyleAnalyzer {
 
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         return analyze(sourceRoot, Collections.emptyList());
@@ -46,10 +43,14 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot, List<String> variableWhitelist) {
         try {
-            String xmlResult = callPython(sourceRoot, variableWhitelist);
-            Document resultXml = convertStringToXMLDocument(xmlResult);
-
-            return buildReportFromXmlRoot(resultXml);
+            String xmlResult = callPython(sourceRoot, variableWhitelist).trim();
+            System.out.println("XML result: " + xmlResult);
+            if (xmlResult.isEmpty()) {
+                throw new IllegalStateException("XML result should not be empty.");
+            } else {
+                Document resultXml = convertStringToXMLDocument(xmlResult);
+                return buildReportFromXmlRoot(resultXml);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -91,9 +92,12 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     }
 
     private String callPython(String sourceRoot, List<String> variableWhitelist) throws InterruptedException, IOException {
+        // variable white list expect one argument otherwise ',' stands for no white list
+        String variableWhiteList = variableWhitelist.isEmpty() ? "," : String.join(",", variableWhitelist);
         Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot,
-                                                   "--disable-single-character-word",
-                                                   "--variable-whitelist", String.join(",", variableWhitelist)).start();
+                                                   // "--disable-single-character-word",
+                                                    "--variable-whitelist", variableWhiteList
+                                                ).start();
         pythonProcess.waitFor();
         return readProcessOutput(pythonProcess);
     }
@@ -131,4 +135,5 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
             throw new RuntimeException(e);
         }
     }
+
 }

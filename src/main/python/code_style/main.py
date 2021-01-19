@@ -10,9 +10,9 @@ except ImportError:
 from analyzer import analyze_root
 from Config import Config
 
-from Rules.Rule import Rule
-from Rules.GlobalVariable import GlobalVariableRule
-from Rules.NamingStyle import NamingStyleRule
+from rules.Rule import Rule
+from rules.GlobalVariable import GlobalVariableRule
+from rules.NamingStyle import NamingStyleRule
 
 
 def parse_arguments():
