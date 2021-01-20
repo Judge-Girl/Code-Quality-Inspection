@@ -1,6 +1,6 @@
-
 import os
 import subprocess
+from typing import Dict
 
 try:
     import xml.etree.cElementTree as XML
@@ -8,32 +8,31 @@ except ImportError:
     import xml.etree.ElementTree as XML
 
 from Config import Config
+from rules.RuleResult import RuleResult
 
-from rules.global_variable import global_variable_check
-from rules.naming_style import naming_style_check
+class CannotCppCheckError(Exception):
+    pass
 
-rules = [global_variable_check,
-         naming_style_check]
-
-
-def dump_cpp_check_result(file_path):
+def dump_cpp_check_result(file_path: str) -> str:
     subprocess.run(['cppcheck', file_path, '--dump'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     dump_file_path = os.path.join(f'{file_path}.dump')
-    with open(dump_file_path, "r") as f:
-        dump_content = ''.join(f.readlines())
-    
+    try:
+        with open(dump_file_path, "r") as f:
+            dump_content = ''.join(f.readlines())
+    except FileNotFoundError:
+        raise CannotCppCheckError()
     os.remove(dump_file_path)
 
     return dump_content
 
 
-def analyze_code_style(path, config: Config):
+def analyze_code_style(path: str, config: Config) -> Dict[str, RuleResult]:
     xml = XML.fromstring(dump_cpp_check_result(path))
     xml = xml.find('dump')
 
-    result = dict()
-    for rule in rules:
-        result = {**result, **rule(xml, config)}
+    rule_results = dict()
+    for rule in config.rules:
+        rule_results[rule.rule_name] = rule.apply_rule(xml, config)
 
-    return result
+    return rule_results
