@@ -1,7 +1,7 @@
 # Code Quality Inspection (CQL)
 
-## DEMO
-![DEMO](https://i.imgur.com/MZeadP5.png)
+The Code Quality Inspection (CQI) module.
+CQI primarily consists of two kinds of inspection: Cyclomatic Complexity Calculation (CCC) and Coding-Style-Analysis (CSA).
 
 ## Build
 
