@@ -20,9 +20,11 @@ import java.util.List;
  */
 
 public class CodingStyleAnalyzeReport {
-    private int score;
-    private String formula;
-    private List<String> illegalNamingStyleList, globalVariableList;
+    private final int score;
+    private final String formula;
+    private final List<String> illegalNamingStyleList;
+    private final List<String> globalVariableList;
+
     public CodingStyleAnalyzeReport(int score, String formula, List<String> illegalNamingStyleList, List<String> globalVariableList) {
         this.score = score;
         this.formula = formula;
@@ -35,7 +37,7 @@ public class CodingStyleAnalyzeReport {
     }
 
     public String getFormula() {
-       return formula;
+        return formula;
     }
 
     public List<String> getIllegalNamingStyleList() {

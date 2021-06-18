@@ -14,14 +14,12 @@
 package tw.waterball.judgegirl.cqi.cyclomatic;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
-import java.io.OutputStreamWriter;
-import java.lang.ProcessBuilder;
-import java.lang.Process;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 /**
@@ -33,8 +31,8 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
     public CyclomaticComplexityReport calculate(List<String> sourceCodes) {
         return new CyclomaticComplexityReport(
                 sourceCodes.stream()
-                .mapToInt(this::calculateSingleCode)
-                .sum()
+                        .mapToInt(this::calculateSingleCode)
+                        .sum()
         );
     }
 
@@ -44,7 +42,7 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
     }
 
     private String preprocess(String sourceCode) {
-        sourceCode = sourceCode.replaceAll("\r","");
+        sourceCode = sourceCode.replaceAll("\r", "");
         sourceCode = removePattern(sourceCode, "\n[ \t]*#[ \t]*include[^\n]*");
         sourceCode = callCPreprocessor(sourceCode);
         sourceCode = removePattern(sourceCode, "\n# [0-9]+ [^\n]*");
@@ -53,31 +51,31 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
         return sourceCode;
     }
 
-    private String removePattern(String code, String patternString){
+    private String removePattern(String code, String patternString) {
         return ("\n" + code).replaceAll(patternString, "");
     }
 
     private String callCPreprocessor(String sourceCode) {
         ProcessBuilder pb = new ProcessBuilder("cpp");
         Process proc;
-        try{
-             proc = pb.start();
-        } catch(IOException err) {
+        try {
+            proc = pb.start();
+        } catch (IOException err) {
             throw new RuntimeException(err);
         }
-        try (OutputStreamWriter osw = new OutputStreamWriter(proc.getOutputStream())) {
+        try (OutputStreamWriter osw = new OutputStreamWriter(proc.getOutputStream(), UTF_8)) {
             osw.write(sourceCode, 0, sourceCode.length());
-        } catch(IOException err) {
+        } catch (IOException err) {
             throw new RuntimeException(err);
         }
-        try{
-            sourceCode = new String(proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        } catch(IOException err) {
+        try {
+            sourceCode = new String(proc.getInputStream().readAllBytes(), UTF_8);
+        } catch (IOException err) {
             throw new RuntimeException(err);
         }
-        try{
+        try {
             proc.waitFor();
-        } catch(InterruptedException err) {
+        } catch (InterruptedException err) {
             throw new RuntimeException(err);
         }
         return sourceCode;
@@ -85,20 +83,18 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
 
     private String removeStringLiterals(String sourceCode) {
         StringBuilder result = new StringBuilder();
-        Boolean inStr = false;
-        for(int i = 0; i < sourceCode.length(); i++) {
-            if(inStr) {
-                if(sourceCode.charAt(i) == '"') {
+        boolean inStr = false;
+        for (int i = 0; i < sourceCode.length(); i++) {
+            if (inStr) {
+                if (sourceCode.charAt(i) == '"') {
                     result.append('"');
                     inStr = false;
-                }
-                else if(sourceCode.charAt(i) == '\\') {
+                } else if (sourceCode.charAt(i) == '\\') {
                     i++;
                 }
-            }
-            else {
+            } else {
                 result.append(sourceCode.charAt(i));
-                if(sourceCode.charAt(i) == '"') {
+                if (sourceCode.charAt(i) == '"') {
                     inStr = true;
                 }
             }
@@ -111,7 +107,7 @@ public class CyclomaticComplexityCalculatorImpl implements CyclomaticComplexityC
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(sourceCode);
         int counter = 0;
-        while(matcher.find()) {
+        while (matcher.find()) {
             counter++;
         }
         return counter;

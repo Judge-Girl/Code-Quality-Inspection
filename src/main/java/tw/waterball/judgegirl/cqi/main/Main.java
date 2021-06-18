@@ -16,30 +16,31 @@ package tw.waterball.judgegirl.cqi.main;
 import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzeReport;
 import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzer;
 import tw.waterball.judgegirl.cqi.csa.CodingStyleAnalyzerImpl;
-import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityCalculatorImpl;
 import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityCalculator;
+import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityCalculatorImpl;
 import tw.waterball.judgegirl.cqi.cyclomatic.CyclomaticComplexityReport;
-
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Main{
+import static java.util.Objects.requireNonNullElseGet;
 
-    public static void main(String[] args){
-        if(args.length!=1){
+public class Main {
+
+    public static void main(String[] args) {
+        if (args.length != 1) {
             System.out.println("Expected one argument: sourceRootPathString.");
             return;
         }
         String sourceRootPathString = args[0];
         Path sourceRootPath = Path.of(sourceRootPathString);
         File folder = sourceRootPath.toFile();
-        File[] fileList = folder.listFiles();
+        File[] fileList = requireNonNullElseGet(folder.listFiles(), () -> new File[0]);
         List<String> sourceCodes = new ArrayList<>();
-        for(int i = 0; i < fileList.length; i++) {
-            sourceCodes.add(fileList[i].getPath());
+        for (File file : fileList) {
+            sourceCodes.add(file.getPath());
         }
         CyclomaticComplexityCalculator calculator = new CyclomaticComplexityCalculatorImpl();
         CyclomaticComplexityReport ccReport = calculator.calculate(sourceCodes);

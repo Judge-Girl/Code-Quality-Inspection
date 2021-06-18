@@ -29,12 +29,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * @author edisonhello edisonhello@hotmail.com
  */
 
 public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
 
+    @Override
     public CodingStyleAnalyzeReport analyze(String sourceRoot) {
         return analyze(sourceRoot, Collections.emptyList());
     }
@@ -66,7 +69,7 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     }
 
     private List<String> retrieveTopLevelResultList(Document xml, String tagName, String attrbuteName) {
-        Element element = (Element)getXmlNodeByXPath(xml, "/folder/" + tagName);
+        Element element = (Element) getXmlNodeByXPath(xml, "/folder/" + tagName);
         String resultString = element.getAttribute(attrbuteName);
         String[] strings = resultString.split(",");
 
@@ -94,9 +97,9 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
         // variable white list expect one argument otherwise ',' stands for no white list
         String variableWhiteList = variableWhitelist.isEmpty() ? "," : String.join(",", variableWhitelist);
         Process pythonProcess = new ProcessBuilder("python3", getPathToPythonEntry(), sourceRoot,
-                                                   // "--disable-single-character-word",
-                                                    "--variable-whitelist", variableWhiteList
-                                                ).start();
+                // "--disable-single-character-word",
+                "--variable-whitelist", variableWhiteList
+        ).start();
         pythonProcess.waitFor();
         return readProcessOutput(pythonProcess);
     }
@@ -104,15 +107,13 @@ public class CodingStyleAnalyzerImpl implements CodingStyleAnalyzer {
     private String getPathToPythonEntry() {
         // TODO: a drunk way of injecting the path by env (should be improved)
         String path = System.getenv("csa_python_main_path");
-        System.out.printf("Python src root: '%s'.\n", path);
+        System.out.printf("Python src root: '%s'.%n", path);
         return path;
     }
 
     private String readProcessOutput(Process process) {
-        try {
-            InputStream stdout = process.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-
+        try (InputStream stdout = process.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, UTF_8))) {
             StringBuilder totalResult = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
